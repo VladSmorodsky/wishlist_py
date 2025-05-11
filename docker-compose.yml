@@ -1,20 +1,18 @@
 services:
   db:
     image: postgres:17.4
-    environment:
-      POSTGRES_DB: ${DB_NAME}
-      POSTGRES_USER: ${DB_USER}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    env_file:
+      - ./wishlist_project/.env
     volumes:
       - db_data:/var/lib/postgresql/data
 
   web:
-    build: .
-    command: bash -c "cd wishlist_project && python manage.py migrate && python manage.py runserver 0.0.0.0:9000"
+    build: ./wishlist_project
+    command: bash -c "python manage.py migrate && python manage.py runserver 0.0.0.0:9000"
     volumes:
-      - .:/app
+      - ./wishlist_project:/app
     env_file:
-      - .env
+      - ./wishlist_project/.env
     depends_on:
       - db
     ports:
