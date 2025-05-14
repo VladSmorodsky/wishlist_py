@@ -1,3 +1,4 @@
+asgiref==3.8.1
 attrs==25.3.0
 cffi==1.17.1
 cryptography==44.0.3
@@ -7,6 +8,7 @@ djangorestframework_simplejwt==5.5.0
 frozenlist==1.6.0
 idna==3.10
 multidict==6.4.3
+pillow==11.2.1
 propcache==0.3.1
 psycopg2-binary==2.9.10
 pycparser==2.22
