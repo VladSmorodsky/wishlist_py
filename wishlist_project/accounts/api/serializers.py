@@ -2,7 +2,7 @@ import re
 
 from rest_framework import serializers
 
-from wishlist_project.accounts.models import User
+from accounts.models import User
 
 
 class UserRegisterSerializer(serializers.ModelSerializer):
@@ -20,9 +20,9 @@ class UserRegisterSerializer(serializers.ModelSerializer):
         :param value:
         :return:
         """
-        if re.match(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*[\d])(?=.*[@#$%&_]).{8,}$', value) is None:
+        if re.match(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*[\d])(?=.*[@#$%!&_]).{8,}$', value) is None:
             raise serializers.ValidationError(
-                'Password must contains 8 symbols at least and next symbols (at least one of it): a-z, A-Z, 0-9, @#$%&_')
+                'Password must contains 8 symbols at least and next symbols (at least one of it): a-z, A-Z, 0-9, @#$%!&_')
         return value
 
     def validate(self, data):

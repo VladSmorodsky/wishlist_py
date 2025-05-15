@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 import os
+from datetime import timedelta
 from pathlib import Path
 
 from dotenv import load_dotenv
@@ -139,3 +140,8 @@ REST_FRAMEWORK = {
 }
 
 AUTH_USER_MODEL = 'accounts.User'
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=float(os.getenv('ACCESS_TOKEN_TTL'))),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=float(os.getenv('REFRESH_TOKEN_TTL'))),
+}

@@ -1,7 +1,5 @@
-from enum import Enum
-
 from django.conf import settings
-from django.db import models
+from django.db import models, transaction
 
 User = settings.AUTH_USER_MODEL
 
@@ -36,12 +34,10 @@ class FriendRequest(models.Model):
         unique_together = ('from_user', 'to_user')
 
     def accept(self):
-        Friendship.objects.bulk_create([
-            Friendship(from_user=self.from_user, to_user=self.to_user),
-            Friendship(from_user=self.to_user, to_user=self.from_user),
-        ])
-        self.status = FriendRequestStatus.ACCEPTED
-        self.save()
+        with transaction.atomic():
+            Friendship.objects.get_or_create(user=self.from_user, friend=self.to_user)
+            self.status = FriendRequestStatus.ACCEPTED
+            self.save()
 
     def reject(self):
         self.status = FriendRequestStatus.REJECTED
