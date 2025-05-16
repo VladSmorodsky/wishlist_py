@@ -43,7 +43,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     'accounts',
-    'friendship'
+    'friendship',
+    'wishlist_app'
 ]
 
 MIDDLEWARE = [
