@@ -8,7 +8,7 @@ services:
 
   web:
     build: ./wishlist_project
-    command: bash -c "python manage.py migrate && python manage.py runserver 0.0.0.0:9000"
+    command: bash -c "python manage.py migrate && uvicorn --host 0.0.0.0 --port 9000 wishlist_project.asgi:application --reload"
     volumes:
       - ./wishlist_project:/app
     env_file:

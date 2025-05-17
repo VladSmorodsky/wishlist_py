@@ -45,7 +45,8 @@ INSTALLED_APPS = [
     'accounts',
     'friendship',
     'wishlist_app',
-    'django_celery_beat'
+    'django_celery_beat',
+    'channels',
 ]
 
 MIDDLEWARE = [
@@ -160,3 +161,14 @@ EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 EMAIL_USE_TLS = os.getenv("EMAIL_USE_TLS", False) == "True"
 DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL')
+
+ASGI_APPLICATION = 'wishlist_project.asgi.application'
+CHAT_BROKER_URL = os.getenv('CHAT_BROKER_URL')
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            'hosts': [CHAT_BROKER_URL],
+        }
+    }
+}
