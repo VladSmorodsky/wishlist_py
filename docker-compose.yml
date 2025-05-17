@@ -23,5 +23,31 @@ services:
       timeout: 10s
       retries: 1
 
+  redis:
+    image: redis:7.4.2
+    ports:
+      - '6379:6379'
+
+  web-celery:
+    build: ./wishlist_project
+    volumes:
+      - ./wishlist_project:/app
+    env_file:
+      - ./wishlist_project/.env
+    command: ./celery_tasks/start_celery.sh
+    depends_on:
+      - redis
+
+  web-celery-beat:
+    build: ./wishlist_project
+    volumes:
+      - ./wishlist_project:/app
+    env_file:
+      - ./wishlist_project/.env
+    command: ./celery_tasks/start_celery_beat.sh
+    depends_on:
+      - redis
+
+
 volumes:
   db_data: { }

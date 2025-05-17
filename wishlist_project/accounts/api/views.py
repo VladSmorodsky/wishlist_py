@@ -5,6 +5,7 @@ from rest_framework.generics import CreateAPIView
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from accounts.api.serializers import UserRegisterSerializer
+from celery_tasks.tasks import send_email
 
 
 class UserRegisterApiView(CreateAPIView):
@@ -14,6 +15,8 @@ class UserRegisterApiView(CreateAPIView):
 
     def perform_create(self, serializer) -> None:
         user = serializer.save()
+        send_email.delay(user.email, f"{user.username} registration",
+                         f"Hi there, {user.username}! You registered successfully.")
         token = RefreshToken.for_user(user)
         self.token = token.access_token
         self.refresh_token = token
