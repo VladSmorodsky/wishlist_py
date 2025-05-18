@@ -40,6 +40,29 @@ cd wishlist_project
 - **`EMAIL_BACKEND`**: define django email backend to work with emails. Use next value for debug environment:
   `django.core.mail.backends.console.EmailBackend`
 
+4. Run `docker-compose.yml` script:
+
+```shell
+docker compose up --build -d
+```
+
+5. To create a superuser for entering into django admin, run the next command:
+
+```shell
+docker compose run -it api make shell
+```
+
+And then run python commands for creating a superuser:
+
+```python
+from accounts.models import User
+
+user = User(email="<superuser_email>", is_staff=True, is_superuser=True)
+user.set_password("<superuser_password>")
+user.save()
+exit()
+```
+
 ## Project structure
 
 Project consists of Django Rest Framework application.
