@@ -1,1 +1,55 @@
 # wishlist_py
+
+It's a wish management project that provides:
+
+- login and register user system
+- friendship system
+- manipulating own wishes
+- discuss wishes with friends
+
+## Project setup
+
+1. Clone the repo and go to the project root.
+2. Go to wishlist_project directory:
+
+```shell
+cd wishlist_project
+```
+
+3. Create `.env` file from `.env.example` and set values:
+
+- **`DJANGO_SECRET_KEY`**: Django secret key value
+- **`DJANGO_DEBUG`**: Django Debug value. Can be True or False.
+- **`ACCESS_TOKEN_TTL`**: JWT access token lifetime in number of minutes.
+- **`REFRESH_TOKEN_TTL`**: JWT refresh token lifetime in number of days.
+- **`POSTGRES_DB`**: database name.
+- **`POSTGRES_USER`**: database user.
+- **`POSTGRES_PASSWORD`**: database user password.
+- **`DB_HOST`**: database host.
+- **`DB_PORT`**: database port.
+- **`ALLOWED_HOST`**: list of available hosts. It should be string with comma separated values (e.g.
+  `'test.com,test.domai.com'`).
+- **`CELERY_BROKER_URL`**: Celery broker url.
+- **`CHAT_BROKER_URL`**: Broker url for Websocket chat.
+- **`EMAIL_HOST`**: email host provider domain
+- **`EMAIL_PORT`**: email port
+- **`EMAIL_HOST_USER`**: host user's email
+- **`EMAIL_HOST_PASSWORD`**: host user's password
+- **`EMAIL_USE_TLS`**: use TLS connection (True or False)
+- **`DEFAULT_FROM_MAIL`**: define from what email messages will be sent by default
+- **`EMAIL_BACKEND`**: define django email backend to work with emails. Use next value for debug environment:
+  `django.core.mail.backends.console.EmailBackend`
+
+## Project structure
+
+Project consists of Django Rest Framework application.
+
+### Wishlist Project Structure:
+
+- **`accounts`**: API for user management application (register, login)
+- **`celery_tasks`**: Project background tasks
+- **`friendship`**: Friendship management system application (send a friend request, accept or reject it)
+- **`wishlist_app`**: Wishlist management application
+- **`ws_chat`**: Websocket chat
+- **`tests`**: Project's tests
+- **`wishlist_project`**: Main project directory with configurations

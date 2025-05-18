@@ -1,8 +1,6 @@
 from django.conf import settings
 from django.db import models
 
-from accounts.models import User
-
 
 class ActiveWishlistManager(models.Manager):
     """
@@ -28,7 +26,7 @@ class Wish(models.Model):
 
     class Meta:
         ordering = ['-created_at']
-        db_table = 'Wish'
+        db_table = 'Wishes'
 
     def __str__(self):
         return self.name
