@@ -48,6 +48,15 @@ services:
     depends_on:
       - redis
 
+  telegram-bot:
+    build: ./telegram_bot
+    volumes:
+      - ./telegram_bot:/app
+    env_file:
+      - ./telegram_bot/.env
+    command: python main.py
+    ports:
+      - '9001:9001'
 
 volumes:
   db_data: { }
