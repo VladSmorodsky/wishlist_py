@@ -31,14 +31,21 @@ def on_message(ch, method, properties, body):
     ch.basic_ack(delivery_tag=method.delivery_tag)
 
 
-connection = BlockingConnection(
-    ConnectionParameters(host=os.getenv("RABBITMQ_BROKER_HOST"), port=int(os.getenv("RABBITMQ_PORT", 5672))))
-channel = connection.channel()
-channel.exchange_declare(exchange=WISH_EXCHANGE_NAME, exchange_type="topic", durable=True)
-channel.queue_declare(queue=TELEGRAM_REQUEST_QUEUE)
-channel.queue_bind(exchange=WISH_EXCHANGE_NAME, queue=TELEGRAM_REQUEST_QUEUE, routing_key=BindEvent.CREATE_WISH.value)
-channel.queue_bind(exchange=WISH_EXCHANGE_NAME, queue=TELEGRAM_REQUEST_QUEUE,
-                   routing_key=BindEvent.GET_WISHES_REQUEST.value)
-channel.basic_consume(queue=TELEGRAM_REQUEST_QUEUE, on_message_callback=on_message)
-logger.info('Started consuming...')
-channel.start_consuming()
+def get_channel_connection():
+    connection = BlockingConnection(
+        ConnectionParameters(host=os.getenv("RABBITMQ_BROKER_HOST"), port=int(os.getenv("RABBITMQ_PORT", 5672))))
+    channel = connection.channel()
+    channel.exchange_declare(exchange=WISH_EXCHANGE_NAME, exchange_type="topic", durable=True)
+    channel.queue_declare(queue=TELEGRAM_REQUEST_QUEUE)
+    channel.queue_bind(exchange=WISH_EXCHANGE_NAME, queue=TELEGRAM_REQUEST_QUEUE,
+                       routing_key=BindEvent.CREATE_WISH.value)
+    channel.queue_bind(exchange=WISH_EXCHANGE_NAME, queue=TELEGRAM_REQUEST_QUEUE,
+                       routing_key=BindEvent.GET_WISHES_REQUEST.value)
+    channel.basic_consume(queue=TELEGRAM_REQUEST_QUEUE, on_message_callback=on_message)
+    return channel
+
+
+if __name__ == "__main__":
+    channel = get_channel_connection()
+    logger.info('Started consuming...')
+    channel.start_consuming()

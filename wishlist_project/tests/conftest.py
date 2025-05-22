@@ -3,7 +3,6 @@ from rest_framework.test import APIClient
 
 from accounts.models import User
 from friendship.models import Friendship
-from wishlist_app.models import Wish
 
 
 @pytest.fixture
@@ -33,8 +32,3 @@ def get_friends(db):
     )
     Friendship.objects.create(user=user_object, friend=friend)
     return [user_object, friend]
-
-# @pytest.fixture
-# def auth_client(api_client: APIClient, user):
-#     api_client.force_authenticate(user=user)
-#     return api_client
