@@ -15,6 +15,7 @@ services:
       - ./wishlist_project/.env
     depends_on:
       - db
+      - rabbitmq
     ports:
       - '9000:9000'
     healthcheck:
@@ -55,8 +56,40 @@ services:
     env_file:
       - ./telegram_bot/.env
     command: python main.py
+    depends_on:
+      - rabbitmq
     ports:
       - '9001:9001'
+
+  rabbitmq:
+    image: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+  web-consumer:
+    build: ./wishlist_project
+    volumes:
+      - ./wishlist_project:/app
+    command: python -m rabbitmq.consumer
+    depends_on:
+      - web
+      - rabbitmq
+    env_file:
+      - ./wishlist_project/.env
+    environment:
+      - DJANGO_SETTINGS_MODULE=wishlist_project.settings
+
+  telegram-bot-consumer:
+    build: ./telegram_bot
+    volumes:
+      - ./telegram_bot:/app
+    env_file:
+      - ./telegram_bot/.env
+    command: python -m rabbitmq.consumer
+    depends_on:
+      - telegram-bot
+      - rabbitmq
 
 volumes:
   db_data: { }

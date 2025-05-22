@@ -172,3 +172,9 @@ CHANNEL_LAYERS = {
         }
     }
 }
+
+RABBITMQ_BROKER_HOST = os.getenv('RABBITMQ_BROKER_HOST')
+RABBITMQ_PORT = os.getenv('RABBITMQ_PORT')
+
+MEDIA_URL = '/images/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'static/images')
