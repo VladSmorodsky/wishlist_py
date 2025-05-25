@@ -1,0 +1,95 @@
+services:
+  db:
+    image: postgres:17.4
+    env_file:
+      - ./wishlist_project/.env
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+  web:
+    build: ./wishlist_project
+    command: bash -c "python manage.py migrate && uvicorn --host 0.0.0.0 --port 9000 wishlist_project.asgi:application --reload"
+    volumes:
+      - ./wishlist_project:/app
+    env_file:
+      - ./wishlist_project/.env
+    depends_on:
+      - db
+      - rabbitmq
+    ports:
+      - '9000:9000'
+    healthcheck:
+      test: ping 0.0.0.0 -p 9000 -c 1
+      interval: 60s
+      timeout: 10s
+      retries: 1
+
+  redis:
+    image: redis:7.4.2
+    ports:
+      - '6379:6379'
+
+  web-celery:
+    build: ./wishlist_project
+    volumes:
+      - ./wishlist_project:/app
+    env_file:
+      - ./wishlist_project/.env
+    command: ./celery_tasks/start_celery.sh
+    depends_on:
+      - redis
+
+  web-celery-beat:
+    build: ./wishlist_project
+    volumes:
+      - ./wishlist_project:/app
+    env_file:
+      - ./wishlist_project/.env
+    command: ./celery_tasks/start_celery_beat.sh
+    depends_on:
+      - redis
+
+  telegram-bot:
+    build: ./telegram_bot
+    volumes:
+      - ./telegram_bot:/app
+    env_file:
+      - ./telegram_bot/.env
+    command: python main.py
+    depends_on:
+      - rabbitmq
+    ports:
+      - '9001:9001'
+
+  rabbitmq:
+    image: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+  web-consumer:
+    build: ./wishlist_project
+    volumes:
+      - ./wishlist_project:/app
+    command: python -m rabbitmq.consumer
+    depends_on:
+      - web
+      - rabbitmq
+    env_file:
+      - ./wishlist_project/.env
+    environment:
+      - DJANGO_SETTINGS_MODULE=wishlist_project.settings
+
+  telegram-bot-consumer:
+    build: ./telegram_bot
+    volumes:
+      - ./telegram_bot:/app
+    env_file:
+      - ./telegram_bot/.env
+    command: python -m rabbitmq.consumer
+    depends_on:
+      - telegram-bot
+      - rabbitmq
+
+volumes:
+  db_data: { }
